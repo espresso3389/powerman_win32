@@ -16,6 +16,20 @@
 // for PowerRegisterSuspendResumeNotification/PowerUnregisterSuspendResumeNotification
 #pragma comment(lib, "Powrprof.lib")
 
+static flutter::EncodableMap getSystemPowerStatus()
+{
+  SYSTEM_POWER_STATUS sps;
+  GetSystemPowerStatus(&sps);
+  return flutter::EncodableMap{
+      {flutter::EncodableValue("ACLineStatus"), flutter::EncodableValue(static_cast<int32_t>(sps.ACLineStatus))},
+      {flutter::EncodableValue("BatteryFlag"), flutter::EncodableValue(static_cast<int32_t>(sps.BatteryFlag))},
+      {flutter::EncodableValue("BatteryLifePercent"), flutter::EncodableValue(static_cast<int32_t>(sps.BatteryLifePercent))},
+      {flutter::EncodableValue("SystemStatusFlag"), flutter::EncodableValue(static_cast<int32_t>(sps.SystemStatusFlag))},
+      {flutter::EncodableValue("BatteryLifeTime"), flutter::EncodableValue(static_cast<int32_t>(sps.BatteryLifeTime))},
+      {flutter::EncodableValue("BatteryFullLifeTime"), flutter::EncodableValue(static_cast<int32_t>(sps.BatteryFullLifeTime))},
+  };
+}
+
 namespace powerman_win32
 {
 
@@ -74,29 +88,14 @@ namespace powerman_win32
       const flutter::MethodCall<flutter::EncodableValue> &method_call,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
   {
-    // if (method_call.method_name().compare("getPlatformVersion") == 0)
-    // {
-    //   std::ostringstream version_stream;
-    //   version_stream << "Windows ";
-    //   if (IsWindows10OrGreater())
-    //   {
-    //     version_stream << "10+";
-    //   }
-    //   else if (IsWindows8OrGreater())
-    //   {
-    //     version_stream << "8";
-    //   }
-    //   else if (IsWindows7OrGreater())
-    //   {
-    //     version_stream << "7";
-    //   }
-    //   result->Success(flutter::EncodableValue(version_stream.str()));
-    // }
-    // else
-    // {
-    //   result->NotImplemented();
-    // }
-    result->NotImplemented();
+    if (method_call.method_name().compare("getSystemPowerStatus") == 0)
+    {
+      result->Success(flutter::EncodableValue(getSystemPowerStatus()));
+    }
+    else
+    {
+      result->NotImplemented();
+    }
   }
 
   void PowermanWin32Plugin::ensureInit(HWND hwnd)
@@ -145,18 +144,7 @@ namespace powerman_win32
 
   void PowermanWin32Plugin::notifyPowerStatusChange()
   {
-    SYSTEM_POWER_STATUS sps;
-    GetSystemPowerStatus(&sps);
-    channel->InvokeMethod(
-        "win32PowerStatusChange",
-        std::make_unique<flutter::EncodableValue>(flutter::EncodableMap{
-            {flutter::EncodableValue("ACLineStatus"), flutter::EncodableValue(static_cast<int32_t>(sps.ACLineStatus))},
-            {flutter::EncodableValue("BatteryFlag"), flutter::EncodableValue(static_cast<int32_t>(sps.BatteryFlag))},
-            {flutter::EncodableValue("BatteryLifePercent"), flutter::EncodableValue(static_cast<int32_t>(sps.BatteryLifePercent))},
-            {flutter::EncodableValue("SystemStatusFlag"), flutter::EncodableValue(static_cast<int32_t>(sps.SystemStatusFlag))},
-            {flutter::EncodableValue("BatteryLifeTime"), flutter::EncodableValue(static_cast<int32_t>(sps.BatteryLifeTime))},
-            {flutter::EncodableValue("BatteryFullLifeTime"), flutter::EncodableValue(static_cast<int32_t>(sps.BatteryFullLifeTime))},
-        }));
+    channel->InvokeMethod("win32PowerStatusChange", std::make_unique<flutter::EncodableValue>(getSystemPowerStatus()));
   }
 
   void PowermanWin32Plugin::notifyPowerSettingChange(const POWERBROADCAST_SETTING *setting)

@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-
 import 'package:powerman_win32/powerman_win32.dart';
 
 void main() {
@@ -17,6 +14,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
+  void initState() {
+    super.initState();
+    PowermanWin32.instance.getSystemPowerStatus();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
@@ -26,17 +29,14 @@ class _MyAppState extends State<MyApp> {
         body: Column(
           children: [
             StreamBuilder(
-                stream: PowermanWin32.instance.acLineStatus,
-                builder: (context, snapshot) =>
-                    Text(snapshot.data?.toString() ?? '-')),
+                stream: PowermanWin32.instance.systemPowerStatus,
+                builder: (context, snapshot) => Text(snapshot.data?.toString() ?? '-')),
             StreamBuilder(
                 stream: PowermanWin32.instance.suspendResume,
-                builder: (context, snapshot) =>
-                    Text(snapshot.data?.toString() ?? '-')),
+                builder: (context, snapshot) => Text(snapshot.data?.toString() ?? '-')),
             StreamBuilder(
                 stream: PowermanWin32.instance.displayState,
-                builder: (context, snapshot) =>
-                    Text(snapshot.data?.toString() ?? '-')),
+                builder: (context, snapshot) => Text(snapshot.data?.toString() ?? '-')),
           ],
         ),
       ),
