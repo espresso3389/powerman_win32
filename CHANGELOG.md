@@ -1,3 +1,7 @@
+## 0.2.0
+
+- Upgrade dependencies.
+
 ## 0.1.0
 
 - BREAKING CHANGE: systemPowerStatus replaces acLineStatus.

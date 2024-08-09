@@ -1,6 +1,6 @@
 name: powerman_win32
 description: A plugin to listen to Win32 power events such as AC power state, display on/off, and suspend/resume.
-version: 0.1.0
+version: 0.2.0
 homepage: https://github.com/espresso3389/powerman_win32
 
 environment:
@@ -10,13 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface: ^2.0.2
-  rxdart: ^0.27.7
+  plugin_platform_interface: ^2.1.8
+  rxdart: ^0.28.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
 
 flutter:
 
